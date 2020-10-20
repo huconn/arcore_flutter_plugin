@@ -206,6 +206,9 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                 Log.i(TAG, "2/3: Tracking state is " + trState.toString())
                 methodChannel.invokeMethod("getTrackingState", trState.toString())
             }
+            "centerTap" -> {
+                onSingleTap(null);
+            }
             else -> {
             }
         }
@@ -295,6 +298,24 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                     }
                 }
                 methodChannel.invokeMethod("onPlaneTap", list)
+            }
+            //else if(tap == null && frame.camera.trackingState == TrackingState.TRACKING) {
+            else if(tap == null) {
+                val hitList = frame.hitTest(arSceneView!!.width / 2f, arSceneView!!.height / 2f)
+                val list = ArrayList<HashMap<String, Any>>()
+                for (hit in hitList) {
+                    val trackable = hit.trackable
+                    if (trackable is Plane && trackable.isPoseInPolygon(hit.hitPose)) {
+                        hit.hitPose
+                        val distance: Float = hit.distance
+                        val translation = hit.hitPose.translation
+                        val rotation = hit.hitPose.rotationQuaternion
+                        val flutterArCoreHitTestResult = FlutterArCoreHitTestResult(distance, translation, rotation)
+                        val arguments = flutterArCoreHitTestResult.toHashMap()
+                        list.add(arguments)
+                    }
+                }
+                methodChannel.invokeMethod("onCenterTap", list)
             }
         }
     }

@@ -53,6 +53,7 @@ class ArCoreController {
 
 //  UnsupportedHandler onUnsupported;
   ArCoreHitResultHandler onPlaneTap;
+  ArCoreHitResultHandler onCenterTap;
   ArCorePlaneHandler onPlaneDetected;
   String trackingState = '';
   ArCoreAugmentedImageTrackingHandler onTrackingImage;
@@ -91,6 +92,17 @@ class ArCoreController {
                   (Map<dynamic, dynamic> h) => ArCoreHitTestResult.fromMap(h))
               .toList();
           onPlaneTap(objects);
+        }
+        break;
+      case 'onCenterTap':
+        if (onCenterTap != null) {
+          final List<dynamic> input = call.arguments;
+          final objects = input
+              .cast<Map<dynamic, dynamic>>()
+              .map<ArCoreHitTestResult>(
+                  (Map<dynamic, dynamic> h) => ArCoreHitTestResult.fromMap(h))
+              .toList();
+          onCenterTap(objects);
         }
         break;
       case 'onPlaneDetected':
@@ -228,5 +240,9 @@ class ArCoreController {
     } catch (ex) {
       print(ex);
     }
+  }
+
+  void centerTap() {
+    _channel?.invokeMethod<void>('centerTap');
   }
 }

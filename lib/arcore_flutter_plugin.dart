@@ -3,7 +3,7 @@ export 'package:arcore_flutter_plugin/src/arcore_controller.dart';
 export 'package:arcore_flutter_plugin/src/arcore_face_view.dart';
 export 'package:arcore_flutter_plugin/src/arcore_face_controller.dart';
 export 'package:arcore_flutter_plugin/src/shape/arcore_sphere.dart';
-export 'package:arcore_flutter_plugin/src/shape/arcore_cylindre.dart';
+export 'package:arcore_flutter_plugin/src/shape/arcore_cylinder.dart';
 export 'package:arcore_flutter_plugin/src/shape/arcore_cube.dart';
 export 'package:arcore_flutter_plugin/src/arcore_node.dart';
 export 'package:arcore_flutter_plugin/src/arcore_material.dart';
