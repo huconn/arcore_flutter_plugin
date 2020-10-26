@@ -336,6 +336,13 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
             // detected.
             arSceneView?.scene?.addOnUpdateListener(sceneUpdateListener)
         }
+
+        val enablePlaneRenderer: Boolean? = call.argument("enablePlaneRenderer")
+        if (enablePlaneRenderer != null && !enablePlaneRenderer) {
+            Log.i(TAG, " The plane renderer (enablePlaneRenderer) is set to " + enablePlaneRenderer.toString())
+            arSceneView!!.planeRenderer.isVisible = false
+        }
+        
         result.success(null)
     }
 
@@ -503,7 +510,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
         }
 
         if (arSceneView?.session != null) {
-//            arSceneView!!.planeRenderer.isVisible = false
+            //arSceneView!!.planeRenderer.isVisible = false
             Log.i(TAG, "Searching for surfaces")
         }
     }
