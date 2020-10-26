@@ -36,7 +36,6 @@ class ArCoreController {
     int id,
     this.enableTapRecognizer,
     this.enableUpdateListener,
-    this.forceTapOnScreenCenter,
 //    @required this.onUnsupported,
   }) {
     _channel = MethodChannel('arcore_flutter_plugin_$id');
@@ -46,7 +45,6 @@ class ArCoreController {
 
   final bool enableUpdateListener;
   final bool enableTapRecognizer;
-  final bool forceTapOnScreenCenter;
   MethodChannel _channel;
   StringResultHandler onError;
   StringResultHandler onNodeTap;
@@ -63,7 +61,6 @@ class ArCoreController {
       await _channel.invokeMethod<void>('init', {
         'enableTapRecognizer': enableTapRecognizer,
         'enableUpdateListener': enableUpdateListener,
-        'forceTapOnScreenCenter': forceTapOnScreenCenter,
       });
     } on PlatformException catch (ex) {
       print(ex.message);

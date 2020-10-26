@@ -37,7 +37,6 @@ class _MeasurementScreenState extends State<MeasurementScreen> {
             onArCoreViewCreated: _onArCoreViewCreated,
             enableUpdateListener: true,
             enableTapRecognizer: true,
-            forceTapOnScreenCenter: true,
           ),
           Container(
             child: Column(
