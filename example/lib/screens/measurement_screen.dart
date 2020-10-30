@@ -13,7 +13,6 @@ class _MeasurementScreenState extends State<MeasurementScreen> {
   final double scale = 0.005;
   Vector3 scaleVector;
   final double lineRadius = 0.5;
-  bool busy = false;
   ArCoreController arCoreController;
   List<ArCoreNode> nodes = [];
   ArCorePlane plane;
@@ -38,13 +37,18 @@ class _MeasurementScreenState extends State<MeasurementScreen> {
             enableUpdateListener: true,
             enableTapRecognizer: true,
           ),
-          Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Text('Tap anywhere to place a node'),
-                Text('measurement: ${measurement.toString()}'),
-              ],
+          GestureDetector(
+            onTap: () {
+              arCoreController.centerTap();
+            },
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Text('Tap anywhere to place a node'),
+                  Text('measurement: ${measurement.toString()}'),
+                ],
+              ),
             ),
           ),
           const Center(
@@ -65,7 +69,14 @@ class _MeasurementScreenState extends State<MeasurementScreen> {
     arCoreController.onPlaneDetected = (plane) {
       this.plane = plane;
     };
+    arCoreController.onCenterTap = _onCenterTap;
   }
+
+  void _onCenterTap(List<ArCoreHitTestResult> results) {
+    final ArCoreHitTestResult hit = results.first;
+    print("CENTER TAP OKOKOKOKOKOKOKOKOK");
+  }
+
 
   void _onPlaneTap(List<ArCoreHitTestResult> results) {
     final ArCoreHitTestResult hit = results.first;
@@ -77,13 +88,13 @@ class _MeasurementScreenState extends State<MeasurementScreen> {
   Future _addSphere(ArCoreHitTestResult hit) async {
     final material = ArCoreMaterial(
       color: Color.fromRGBO(255, 255, 255, 1),
-      roughness: 1.0,
-      reflectance: 0.0,
+      roughness: 0.2, //1.0,
+      reflectance: 0.6, //0.0,
     );
 
     final shape = ArCoreSphere(
       materials: [material],
-      radius: 1,
+      radius: 3,
     );
 
     final node = ArCoreNode(
