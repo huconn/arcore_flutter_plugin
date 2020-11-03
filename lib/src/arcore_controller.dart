@@ -164,6 +164,11 @@ class ArCoreController {
     return _channel.invokeMethod('removeARCoreNode', {'nodeName': nodeName});
   }
 
+  Future<bool> isExistNode({@required String nodeName}) {
+    assert(nodeName != null);
+    return _channel.invokeMethod('isExistNode', {'nodeName': nodeName});
+  }
+
   Map<String, dynamic> _addParentNodeNameToParams(
       Map geometryMap, String parentNodeName) {
     if (parentNodeName?.isNotEmpty ?? false)

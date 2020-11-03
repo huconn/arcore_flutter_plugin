@@ -171,6 +171,10 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                 val map = call.arguments as HashMap<String, Any>
                 removeNode(map["nodeName"] as String, result)
             }
+            "isExistNode" -> {
+                val map = call.arguments as HashMap<String, Any>
+                isExistNode(map["nodeName"] as String, result)
+            }
             "positionChanged" -> {
                 Log.i(TAG, " positionChanged")
 
@@ -421,6 +425,16 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
         }
 
         result.success(null)
+    }
+
+    fun isExistNode(name: String, result: MethodChannel.Result) {
+        val node = arSceneView?.scene?.findByName(name)
+        if (node != null) {
+            result.success(true)
+        }
+        else {
+            result.success(false)
+        }
     }
 
     fun updateRotation(call: MethodCall, result: MethodChannel.Result) {
