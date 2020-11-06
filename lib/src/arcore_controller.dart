@@ -160,13 +160,17 @@ class ArCoreController {
   }
 
   Future<void> removeNode({@required String nodeName}) {
-    assert(nodeName != null);
-    return _channel.invokeMethod('removeARCoreNode', {'nodeName': nodeName});
+    if(nodeName != null) {
+      return _channel.invokeMethod('removeARCoreNode', {'nodeName': nodeName});
+    }
+    return Future.value(null);
   }
 
   Future<bool> isExistNode({@required String nodeName}) {
-    assert(nodeName != null);
-    return _channel.invokeMethod('isExistNode', {'nodeName': nodeName});
+    if(nodeName != null) {
+      return _channel.invokeMethod('isExistNode', {'nodeName': nodeName});
+    }
+    return Future.value(false);
   }
 
   Map<String, dynamic> _addParentNodeNameToParams(

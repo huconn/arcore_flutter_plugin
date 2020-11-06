@@ -74,7 +74,7 @@ class _MeasurementScreenState extends State<MeasurementScreen> {
 
   void _onCenterTap(List<ArCoreHitTestResult> results) {
     final ArCoreHitTestResult hit = results.first;
-    print("CENTER TAP OKOKOKOKOKOKOKOKOK");
+    print("CENTER TAP OK");
 
     arCoreController.isExistNode(nodeName: 'xxx').then((value) => print("EXIST:: " + ((value == true)? "TRUE":"FALSE")));
   }
