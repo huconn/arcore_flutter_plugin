@@ -301,7 +301,8 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                 val list = ArrayList<HashMap<String, Any>>()
                 for (hit in hitList) {
                     val trackable = hit.trackable
-                    if (trackable is Plane && trackable.isPoseInPolygon(hit.hitPose)) {
+                    //if (trackable is Plane && trackable.isPoseInPolygon(hit.hitPose)) {
+                    if (trackable is Plane) {
                         hit.hitPose
                         val distance: Float = hit.distance
                         val translation = hit.hitPose.translation
@@ -311,7 +312,9 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                         list.add(arguments)
                     }
                 }
-                methodChannel.invokeMethod("onCenterTap", list)
+                if(list.size > 0) {
+                    methodChannel.invokeMethod("onCenterTap", list)
+                }
             }
         }
     }
