@@ -76,7 +76,9 @@ class _MeasurementScreenState extends State<MeasurementScreen> {
     final ArCoreHitTestResult hit = results.first;
     print("CENTER TAP OK");
 
-    arCoreController.isExistNode(nodeName: 'xxx').then((value) => print("EXIST:: " + ((value == true)? "TRUE":"FALSE")));
+    // 테스트 코드
+    //arCoreController.isExistNode(nodeName: 'xxx').then((value) => print("EXIST:: " + ((value == true)? "TRUE":"FALSE")));
+    //arCoreController.setLightEstimation(false);
   }
 
 

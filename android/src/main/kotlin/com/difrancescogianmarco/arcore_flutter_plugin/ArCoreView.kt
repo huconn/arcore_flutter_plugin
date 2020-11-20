@@ -23,6 +23,7 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
 import com.google.ar.sceneform.*
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Texture
+import com.google.ar.sceneform.rendering.Color;
 import com.google.ar.sceneform.ux.AugmentedFaceNode
 import io.flutter.app.FlutterApplication
 import io.flutter.plugin.common.BinaryMessenger
@@ -212,6 +213,16 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
             "centerTap" -> {
                 onSingleTap(null);
             }
+            "setLightEstimation" -> {
+                val value: Boolean = call.argument("enableLightEstimation") ?: false
+                val oldValue: Boolean = arSceneView?.isLightEstimationEnabled() ?: false
+                if(value != oldValue) {
+                    arSceneView?.setLightEstimationEnabled(value)
+                    //arSceneView?.setLightDirectionUpdateEnabled(value)
+                }
+                val newValue: Boolean = arSceneView?.isLightEstimationEnabled() ?: false
+                Log.d(TAG, "changed 'lightEstimationEnabled' ${oldValue} to ${newValue}")
+            }
             else -> {
             }
         }
@@ -349,7 +360,15 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
             Log.i(TAG, " The plane renderer (enablePlaneRenderer) is set to " + enablePlaneRenderer.toString())
             arSceneView!!.planeRenderer.isVisible = false
         }
-        
+
+        val enableLightEstimation: Boolean = call.argument("enableLightEstimation") ?: false
+        val oldValue: Boolean = arSceneView?.isLightEstimationEnabled() ?: false
+        //arSceneView?.scene?.setLightEstimate(Color(), 1.0f)
+        if(enableLightEstimation != oldValue) {
+            arSceneView?.setLightEstimationEnabled(enableLightEstimation)
+            Log.i(TAG, " LightEstimation is set to ${enableLightEstimation}")
+        }
+
         result.success(null)
     }
 

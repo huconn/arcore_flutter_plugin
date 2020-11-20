@@ -37,6 +37,7 @@ class ArCoreController {
     this.enableTapRecognizer,
     this.enablePlaneRenderer,
     this.enableUpdateListener,
+    this.enableLightEstimation,
 //    @required this.onUnsupported,
   }) {
     _channel = MethodChannel('arcore_flutter_plugin_$id');
@@ -47,6 +48,7 @@ class ArCoreController {
   final bool enableUpdateListener;
   final bool enableTapRecognizer;
   final bool enablePlaneRenderer;
+  final bool enableLightEstimation;
   MethodChannel _channel;
   StringResultHandler onError;
   StringResultHandler onNodeTap;
@@ -64,6 +66,7 @@ class ArCoreController {
         'enableTapRecognizer': enableTapRecognizer,
         'enablePlaneRenderer': enablePlaneRenderer,
         'enableUpdateListener': enableUpdateListener,
+        'enableLightEstimation': enableLightEstimation,
       });
     } on PlatformException catch (ex) {
       print(ex.message);
@@ -253,5 +256,11 @@ class ArCoreController {
 
   void centerTap() {
     _channel?.invokeMethod<void>('centerTap');
+  }
+
+  void setLightEstimation(bool value) {
+    _channel?.invokeMethod<void>('setLightEstimation', {
+      'enableLightEstimation': value,
+    });
   }
 }
