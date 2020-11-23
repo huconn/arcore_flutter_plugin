@@ -16,6 +16,7 @@ class ArCoreView extends StatefulWidget {
   final bool enablePlaneRenderer;
   final bool enableUpdateListener;
   final bool enableLightEstimation;
+  final bool debug;
   final ArCoreViewType type;
 
   const ArCoreView({
@@ -27,6 +28,7 @@ class ArCoreView extends StatefulWidget {
     this.enableUpdateListener = false,
     this.enableLightEstimation = true,
     this.type = ArCoreViewType.STANDARDVIEW,
+    this.debug = false
   }) : super(key: key);
 
   @override
@@ -48,12 +50,13 @@ class _ArCoreViewState extends State<ArCoreView> with WidgetsBindingObserver {
           viewType: 'arcore_flutter_plugin',
           onPlatformViewCreated: _onPlatformViewCreated,
           arCoreViewType: widget.type,
+          debug: widget.debug,
         ),
       );
     }
     return Center(
-      child: Text(
-          '$defaultTargetPlatform is not  supported by the ar_view plugin'),
+      child:
+          Text('$defaultTargetPlatform is not supported by the ar_view plugin'),
     );
   }
 

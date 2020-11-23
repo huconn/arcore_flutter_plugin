@@ -31,7 +31,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
 
-class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMessenger, id: Int, private val isAugmentedFaces: Boolean) : PlatformView, MethodChannel.MethodCallHandler {
+class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMessenger, id: Int, private val isAugmentedFaces: Boolean, private val debug: Boolean) : PlatformView, MethodChannel.MethodCallHandler {
     private val methodChannel: MethodChannel = MethodChannel(messenger, "arcore_flutter_plugin_$id")
     //       private val activity: Activity = (context.applicationContext as FlutterApplication).currentActivity
     lateinit var activityLifecycleCallbacks: Application.ActivityLifecycleCallbacks
@@ -130,6 +130,12 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
         setupLifeCycle(context)
     }
 
+    fun debugLog(message: String) {
+        if (debug) {
+            Log.i(TAG, message)
+        }
+    }
+
     fun loadMesh(textureBytes: ByteArray?) {
         // Load the face regions renderable.
         // This is a skinned model that renders 3D objects mapped to the regions of the augmented face.
@@ -156,19 +162,19 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                 arSceneViewInit(call, result, activity)
             }
             "addArCoreNode" -> {
-                Log.i(TAG, " addArCoreNode")
+                debugLog(" addArCoreNode")
                 val map = call.arguments as HashMap<String, Any>
                 val flutterNode = FlutterArCoreNode(map);
                 onAddNode(flutterNode, result)
             }
             "addArCoreNodeWithAnchor" -> {
-                Log.i(TAG, " addArCoreNode")
+                debugLog(" addArCoreNode")
                 val map = call.arguments as HashMap<String, Any>
                 val flutterNode = FlutterArCoreNode(map)
                 addNodeWithAnchor(flutterNode, result)
             }
             "removeARCoreNode" -> {
-                Log.i(TAG, " removeARCoreNode")
+                debugLog(" removeARCoreNode")
                 val map = call.arguments as HashMap<String, Any>
                 removeNode(map["nodeName"] as String, result)
             }
@@ -177,16 +183,16 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                 isExistNode(map["nodeName"] as String, result)
             }
             "positionChanged" -> {
-                Log.i(TAG, " positionChanged")
+                debugLog(" positionChanged")
 
             }
             "rotationChanged" -> {
-                Log.i(TAG, " rotationChanged")
+                debugLog(" rotationChanged")
                 updateRotation(call, result)
 
             }
             "updateMaterials" -> {
-                Log.i(TAG, " updateMaterials")
+                debugLog(" updateMaterials")
                 updateMaterials(call, result)
 
             }
@@ -196,18 +202,18 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                 loadMesh(textureBytes)
             }
             "dispose" -> {
-                Log.i(TAG, "Disposing ARCore now")
+                debugLog("Disposing ARCore now")
                 dispose()
             }
             "resume" -> {
-                Log.i(TAG, "Resuming ARCore now")
+                debugLog("Resuming ARCore now")
                 onResume()
             }
             "getTrackingState" -> {
-                Log.i(TAG, "1/3: Requested tracking state, returning that back to Flutter now")
+                debugLog("1/3: Requested tracking state, returning that back to Flutter now")
 
                 val trState = arSceneView?.arFrame?.camera?.trackingState
-                Log.i(TAG, "2/3: Tracking state is " + trState.toString())
+                debugLog("2/3: Tracking state is " + trState.toString())
                 methodChannel.invokeMethod("getTrackingState", trState.toString())
             }
             "centerTap" -> {
@@ -221,7 +227,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                     //arSceneView?.setLightDirectionUpdateEnabled(value)
                 }
                 val newValue: Boolean = arSceneView?.isLightEstimationEnabled() ?: false
-                Log.d(TAG, "changed 'lightEstimationEnabled' ${oldValue} to ${newValue}")
+                debugLog("changed 'lightEstimationEnabled' ${oldValue} to ${newValue}")
             }
             else -> {
             }
@@ -237,9 +243,9 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                 Handler().postDelayed({ maybeEnableArButton() }, 200)
             }
             if (availability.isSupported) {
-                Log.i(TAG, "AR SUPPORTED")
+                debugLog("AR SUPPORTED")
             } else { // Unsupported or unknown.
-                Log.i(TAG, "AR NOT SUPPORTED")
+                debugLog("AR NOT SUPPORTED")
             }
         }catch (ex:Exception){
             Log.i(TAG,"maybeEnableArButton ${ex.localizedMessage}" )
@@ -250,33 +256,33 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
     private fun setupLifeCycle(context: Context) {
         activityLifecycleCallbacks = object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-                Log.i(TAG, "onActivityCreated")
+                debugLog("onActivityCreated")
 //                maybeEnableArButton()
             }
 
             override fun onActivityStarted(activity: Activity) {
-                Log.i(TAG, "onActivityStarted")
+                debugLog("onActivityStarted")
             }
 
             override fun onActivityResumed(activity: Activity) {
-                Log.i(TAG, "onActivityResumed")
+                debugLog("onActivityResumed")
                 onResume()
             }
 
             override fun onActivityPaused(activity: Activity) {
-                Log.i(TAG, "onActivityPaused")
+                debugLog("onActivityPaused")
                 onPause()
             }
 
             override fun onActivityStopped(activity: Activity) {
-                Log.i(TAG, "onActivityStopped (Just so you know)")
+                debugLog("onActivityStopped (Just so you know)")
 //                onPause()
             }
 
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
 
             override fun onActivityDestroyed(activity: Activity) {
-                Log.i(TAG, "onActivityDestroyed (Just so you know)")
+                debugLog("onActivityDestroyed (Just so you know)")
 //                onDestroy()
 //                dispose()
             }
@@ -286,7 +292,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
     }
 
     private fun onSingleTap(tap: MotionEvent?) {
-        Log.i(TAG, " onSingleTap")
+        debugLog(" onSingleTap")
         val frame = arSceneView?.arFrame
         if (frame != null) {
             if (tap != null && frame.camera.trackingState == TrackingState.TRACKING) {
@@ -331,7 +337,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
     }
 
     private fun arSceneViewInit(call: MethodCall, result: MethodChannel.Result, context: Context) {
-        Log.i(TAG, "arSceneViewInit")
+        debugLog("arSceneViewInit")
         val enableTapRecognizer: Boolean? = call.argument("enableTapRecognizer")
         if (enableTapRecognizer != null && enableTapRecognizer) {
             arSceneView
@@ -339,9 +345,9 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                     ?.setOnTouchListener { hitTestResult: HitTestResult, event: MotionEvent? ->
 
                         if (hitTestResult.node != null) {
-                            Log.i(TAG, " onNodeTap " + hitTestResult.node?.name)
-                            Log.i(TAG, hitTestResult.node?.localPosition.toString())
-                            Log.i(TAG, hitTestResult.node?.worldPosition.toString())
+                            debugLog(" onNodeTap " + hitTestResult.node?.name)
+                            debugLog(hitTestResult.node?.localPosition.toString())
+                            debugLog(hitTestResult.node?.worldPosition.toString())
                             methodChannel.invokeMethod("onNodeTap", hitTestResult.node?.name)
                             return@setOnTouchListener true
                         }
@@ -357,7 +363,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
 
         val enablePlaneRenderer: Boolean? = call.argument("enablePlaneRenderer")
         if (enablePlaneRenderer != null && !enablePlaneRenderer) {
-            Log.i(TAG, " The plane renderer (enablePlaneRenderer) is set to " + enablePlaneRenderer.toString())
+            debugLog(" The plane renderer (enablePlaneRenderer) is set to " + enablePlaneRenderer.toString())
             arSceneView!!.planeRenderer.isVisible = false
         }
 
@@ -366,7 +372,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
         //arSceneView?.scene?.setLightEstimate(Color(), 1.0f)
         if(enableLightEstimation != oldValue) {
             arSceneView?.setLightEstimationEnabled(enableLightEstimation)
-            Log.i(TAG, " LightEstimation is set to ${enableLightEstimation}")
+            debugLog(" LightEstimation is set to ${enableLightEstimation}")
         }
 
         result.success(null)
@@ -389,7 +395,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                 anchorNode.name = flutterArCoreNode.name
                 anchorNode.renderable = renderable
 
-                Log.i(TAG, "addNodeWithAnchor inserted ${anchorNode.name}")
+                debugLog("addNodeWithAnchor inserted ${anchorNode.name}")
                 attachNodeToParent(anchorNode, flutterArCoreNode.parentNodeName)
 
                 for (node in flutterArCoreNode.children) {
@@ -403,17 +409,17 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
 
     fun onAddNode(flutterArCoreNode: FlutterArCoreNode, result: MethodChannel.Result?) {
 
-        Log.i(TAG, flutterArCoreNode.toString())
-        NodeFactory.makeNode(activity.applicationContext, flutterArCoreNode) { node, throwable ->
+        debugLog(flutterArCoreNode.toString())
+        NodeFactory.makeNode(activity.applicationContext, flutterArCoreNode, debug) { node, throwable ->
 
-            Log.i(TAG, "onAddNode inserted ${node?.name}")
+            debugLog("onAddNode inserted ${node?.name}")
 
 /*            if (flutterArCoreNode.parentNodeName != null) {
-                Log.i(TAG, flutterArCoreNode.parentNodeName);
+                debugLog(flutterArCoreNode.parentNodeName);
                 val parentNode: Node? = arSceneView?.scene?.findByName(flutterArCoreNode.parentNodeName)
                 parentNode?.addChild(node)
             } else {
-                Log.i(TAG, "addNodeToSceneWithGeometry: NOT PARENT_NODE_NAME")
+                debugLog("addNodeToSceneWithGeometry: NOT PARENT_NODE_NAME")
                 arSceneView?.scene?.addChild(node)
             }*/
             if (node != null) {
@@ -430,11 +436,11 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
 
     fun attachNodeToParent(node: Node?, parentNodeName: String?) {
         if (parentNodeName != null) {
-            Log.i(TAG, parentNodeName);
+            debugLog(parentNodeName);
             val parentNode: Node? = arSceneView?.scene?.findByName(parentNodeName)
             parentNode?.addChild(node)
         } else {
-            Log.i(TAG, "addNodeToSceneWithGeometry: NOT PARENT_NODE_NAME")
+            debugLog("addNodeToSceneWithGeometry: NOT PARENT_NODE_NAME")
             arSceneView?.scene?.addChild(node)
         }
     }
@@ -443,7 +449,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
         val node = arSceneView?.scene?.findByName(name)
         if (node != null) {
             arSceneView?.scene?.removeChild(node);
-            Log.i(TAG, "removed ${node.name}")
+            debugLog("removed ${node.name}")
         }
 
         result.success(null)
@@ -462,11 +468,11 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
     fun updateRotation(call: MethodCall, result: MethodChannel.Result) {
         val name = call.argument<String>("name")
         val node = arSceneView?.scene?.findByName(name) as RotatingNode
-        Log.i(TAG, "rotating node:  $node")
+        debugLog("rotating node:  $node")
         val degreesPerSecond = call.argument<Double?>("degreesPerSecond")
-        Log.i(TAG, "rotating value:  $degreesPerSecond")
+        debugLog("rotating value:  $degreesPerSecond")
         if (degreesPerSecond != null) {
-            Log.i(TAG, "rotating value:  ${node.degreesPerSecond}")
+            debugLog("rotating value:  ${node.degreesPerSecond}")
             node.degreesPerSecond = degreesPerSecond.toFloat()
         }
         result.success(null)
@@ -496,7 +502,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
     }
 
     fun onResume() {
-        Log.i(TAG, "onResume()")
+        debugLog("onResume()")
 
         if (arSceneView == null) {
             return
@@ -508,7 +514,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
         }
 
         if (arSceneView?.session == null) {
-            Log.i(TAG, "session is null")
+            debugLog("session is null")
             try {
                 val session = ArCoreUtils.createArSession(activity, mUserRequestedInstall, isAugmentedFaces)
                 if (session == null) {
@@ -547,7 +553,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
 
         if (arSceneView?.session != null) {
             //arSceneView!!.planeRenderer.isVisible = false
-            Log.i(TAG, "Searching for surfaces")
+            debugLog("Searching for surfaces")
         }
     }
 
@@ -559,12 +565,12 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
 
     fun onDestroy() {
       if (arSceneView != null) {
-            Log.i(TAG, "Goodbye ARCore! Destroying the Activity now 7.")
+            debugLog("Goodbye ARCore! Destroying the Activity now 7.")
 
             try {
                 arSceneView?.scene?.removeOnUpdateListener(sceneUpdateListener)
                 arSceneView?.scene?.removeOnUpdateListener(faceSceneUpdateListener)
-                Log.i(TAG, "Goodbye arSceneView.")
+                debugLog("Goodbye arSceneView.")
 
                 arSceneView?.destroy()
                 arSceneView = null
