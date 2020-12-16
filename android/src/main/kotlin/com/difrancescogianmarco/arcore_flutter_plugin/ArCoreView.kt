@@ -372,8 +372,12 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
         //arSceneView?.scene?.setLightEstimate(Color(), 1.0f)
         if(enableLightEstimation != oldValue) {
             arSceneView?.setLightEstimationEnabled(enableLightEstimation)
-            debugLog(" LightEstimation is set to ${enableLightEstimation}")
+            //arSceneView?.setLightDirectionUpdateEnabled(enableLightEstimation)
+            Log.i(TAG, " ==> LightEstimation is set to ${enableLightEstimation}")
+            //Log.i(TAG, " ==> LightDirectionUpdate is set to ${enableLightEstimation}")
         }
+
+        arSceneView?.planeRenderer?.setShadowReceiver(false)
 
         result.success(null)
     }
@@ -435,6 +439,9 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
     }
 
     fun attachNodeToParent(node: Node?, parentNodeName: String?) {
+
+        node?.renderable?.setShadowReceiver(false)
+
         if (parentNodeName != null) {
             debugLog(parentNodeName);
             val parentNode: Node? = arSceneView?.scene?.findByName(parentNodeName)
