@@ -229,6 +229,15 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                 val newValue: Boolean = arSceneView?.isLightEstimationEnabled() ?: false
                 debugLog("changed 'lightEstimationEnabled' ${oldValue} to ${newValue}")
             }
+            "setPlaneRenderer" -> {
+                val value: Boolean = call.argument("enablePlaneRenderer") ?: false
+                val oldValue: Boolean = arSceneView!!.planeRenderer.isVisible() ?: false
+                if(value != oldValue) {
+                    arSceneView!!.planeRenderer.setVisible(value)
+                }
+                val newValue: Boolean = arSceneView!!.planeRenderer.isVisible() ?: false
+                Log.d(TAG, "changed 'enablePlaneRenderer' ${oldValue} to ${newValue}")
+            }
             else -> {
             }
         }
