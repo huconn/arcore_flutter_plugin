@@ -264,6 +264,34 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
 
                 Log.d(TAG, "Now, 'LightEstimationMode' is ${session?.getConfig()?.getLightEstimationMode()}.")
             }
+            "setPlaneFindingMode" -> {
+                val value: String = call.argument("planeFindingMode") ?: "UNKNOWN"
+                val session = arSceneView?.getSession()
+                val config = session?.getConfig()
+
+                when (value) {
+                    "BOTH" -> {
+                        config?.setPlaneFindingMode(Config.PlaneFindingMode.HORIZONTAL_AND_VERTICAL)
+                        session?.configure(config)
+                    }
+                    "HORIZONTAL" -> {
+                        config?.setPlaneFindingMode(Config.PlaneFindingMode.HORIZONTAL)
+                        session?.configure(config)
+                    }
+                    "VERTICAL" -> {
+                        config?.setPlaneFindingMode(Config.PlaneFindingMode.VERTICAL)
+                        session?.configure(config)
+                    }
+                    "DISABLED" -> {
+                        config?.setPlaneFindingMode(Config.PlaneFindingMode.DISABLED)
+                        session?.configure(config)
+                    }
+                    else -> {
+                    }
+                }
+
+                Log.d(TAG, "Now, 'PlaneFindingMode' is ${session?.getConfig()?.getPlaneFindingMode()}.")
+            }
             else -> {
             }
         }

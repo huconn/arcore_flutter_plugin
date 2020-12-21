@@ -292,4 +292,10 @@ class ArCoreController {
       'estimationMode': value,
     });
   }
+
+  void setPlaneFindingMode(String value) {
+    _channel?.invokeMethod<void>('setPlaneFindingMode', {
+      'planeFindingMode': value,
+    });
+  }
 }
