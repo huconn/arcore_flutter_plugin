@@ -286,4 +286,10 @@ class ArCoreController {
       'enablePlaneRenderer': value,
     });
   }
+
+  void setLightEstimationMode(String value) {
+    _channel?.invokeMethod<void>('setLightEstimationMode', {
+      'estimationMode': value,
+    });
+  }
 }

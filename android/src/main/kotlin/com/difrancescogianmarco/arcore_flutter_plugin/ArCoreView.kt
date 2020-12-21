@@ -23,7 +23,9 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
 import com.google.ar.sceneform.*
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Texture
-import com.google.ar.sceneform.rendering.Color;
+import com.google.ar.sceneform.rendering.Color
+import com.google.ar.sceneform.rendering.Light
+import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.AugmentedFaceNode
 import io.flutter.app.FlutterApplication
 import io.flutter.plugin.common.BinaryMessenger
@@ -237,6 +239,30 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                 }
                 val newValue: Boolean = arSceneView!!.planeRenderer.isVisible() ?: false
                 Log.d(TAG, "changed 'enablePlaneRenderer' ${oldValue} to ${newValue}")
+            }
+            "setLightEstimationMode" -> {
+                val value: String = call.argument("estimationMode") ?: "UNKNOWN"
+                val session = arSceneView?.getSession()
+                val config = session?.getConfig()
+
+                when (value) {
+                    "AMBIENT" -> {
+                        config?.setLightEstimationMode(Config.LightEstimationMode.AMBIENT_INTENSITY)
+                        session?.configure(config)
+                    }
+                    "DISABLED" -> {
+                        config?.setLightEstimationMode(Config.LightEstimationMode.DISABLED)
+                        session?.configure(config)
+                    }
+                    "HDR" -> {
+                        config?.setLightEstimationMode(Config.LightEstimationMode.ENVIRONMENTAL_HDR)
+                        session?.configure(config)
+                    }
+                    else -> {
+                    }
+                }
+
+                Log.d(TAG, "Now, 'LightEstimationMode' is ${session?.getConfig()?.getLightEstimationMode()}.")
             }
             else -> {
             }
