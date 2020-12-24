@@ -347,7 +347,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
             override fun onActivityDestroyed(activity: Activity) {
                 debugLog("onActivityDestroyed (Just so you know)")
 //                onDestroy()
-//                dispose()
+                dispose()
             }
         }
 
