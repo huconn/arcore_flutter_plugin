@@ -441,6 +441,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
         }
 
         arSceneView?.planeRenderer?.setShadowReceiver(false)
+        //arSceneView?.scene?.setLightEstimate(Color(1f, 0.1f, 0.1f, 0.9f), 0.5f)
 
         result.success(null)
     }
@@ -504,6 +505,11 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
     fun attachNodeToParent(node: Node?, parentNodeName: String?) {
 
         node?.renderable?.setShadowReceiver(false)
+        // huconn
+        //node?.setLight(Light.builder(Light.Type.DIRECTIONAL).setColor(Color(1f, 0f, 0f, 0.9f)).build())
+        //node?.renderable?.setShadowReceiver(false)
+        //val lightEstimation = arSceneView?.arFrame?.getLightEstimate() ?: null
+        //val pixelIntensity = lightEstimation?.getPixelIntensity()?.toFloat() ?: 1.0f
 
         if (parentNodeName != null) {
             debugLog(parentNodeName);
@@ -599,6 +605,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                     }
                     config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
                     config.focusMode = Config.FocusMode.AUTO;
+                    //config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR;  // huconn
                     session.configure(config)
                     arSceneView?.setupSession(session)
                 }
